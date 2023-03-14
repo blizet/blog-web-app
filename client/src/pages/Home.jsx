@@ -1,0 +1,62 @@
+import React, { useEffect, useState } from 'react'
+import { Link, useLocation } from 'react-router-dom'
+import axios from "axios"
+
+const Home = () => {
+    const [posts,setPosts]=useState([])
+
+    const category= useLocation().search
+
+    useEffect(()=>{
+        const fetchData= async ()=>{
+            try{
+            const res= await axios.get(`/posts${category}`)
+            setPosts(res.data)
+            }catch(err){
+                console.log(err)
+            }
+        };
+        fetchData();
+    },[category]);
+    /*const posts=[
+        {
+            id:1,
+            title:"Brain wrecking",
+            desc:"Try rain out to do that",
+            img:"data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wCEAAoHCBUSEhIREhERDxIPEREPDw8PEREPDw8PGBQZGRgUGBgcIS4lHB4rHxgYJjgmKy8xNTU1GiQ7QDs0Py40NTEBDAwMEA8QGhISGjQhISE0NDQ0NDQ0NDQ0NDQ0NDQ0NDQ0NDQ0NDQ0NDQ0NDQ0NDQ0NDQ0NDQ0NDQ0NDQ0NDQ0NP/AABEIALcBEwMBIgACEQEDEQH/xAAbAAACAwEBAQAAAAAAAAAAAAADBAACBQEGB//EADQQAAMAAgEDAwIEBAYCAwAAAAABAgMRBBIhMUFRcQVhEyKBkTJCobEGI1JiwdEU8BVDcv/EABoBAAMBAQEBAAAAAAAAAAAAAAECAwQABQb/xAAlEQACAgIDAAICAgMAAAAAAAAAAQIRAyEEEjETQSJRMmEFFDP/2gAMAwEAAhEDEQA/AN+QiApl0yJMPJZA5YWQHFlJW8QxEBpxlIwsVyoxsnG36Fo432NasBxYiqxEpUxFYjlxofeMDkxnSxoOPFFiZMXH67mX/NST+Nhugvj/ACtV7NMEUPlxpJ0bWPAkkktJLSS9ESseg2C1cqp7+/2fswlQaux5EsZ5v/ET6Yi/VX0/o0/+jO43IbGf8QZ1lqYjvEPqql4qvHb7Lv8AuJ4MDQk3b0X46lGO/wBmlGTYzNCuKBhSCjWmF6wdZCNFGgBKO9kLTAToOOAs42XuSvSccV8nVBeZGI41NbUtr4CC0LJBJR28bT0019n2LRIAkaKpDPQceM6gi4zw+c8bfbqh+Z9U/dFHAOoOBRsf/KYmt9Wv9rT2Y/M5PXfVrSS1K9dAKkqxG9HKG7J1HQXUQWhjW4/EmFqZ/V92/wBS/K4M3Fdl1pNzS87XoM45Dqdd34S2/hF2lVHnx7X2+zyMjONAN9/YZxGOKPUY5igZmBfDQzFGuC0RbOdBXoCNlaHEBUgFINdCuSwNDxnRykBqtEvKLZMwjpHSyNh5z1L3NOfh6Jlz3farql7NvX7C2OtjeKdipipJ7Bxx/sMY8AaIDTJSJziCnGW6Ayk5077IYAByVqTRXFXq/wBgGbjf6f2ZF5I2alxslXQqpLKSioJNFEZ3orcA3IamUbDQOw59L46qnTW1Ou3u34/sbPQZX0fKlVQ/50tfK9P6mwLP0SKTQpy+OrnXr/K/ZmNE6en5R6GjBzUuumvDp6OQV7QeJL9ILFQZMYcG4B1AwyrQowjcCuVGlkkQ5CEkjrFNkObITsoerxNa3ta99rQl9Q5qcuIe99qv017IzsaL1IZzbWi3H40U03sQzrui0WdzPb+CsyCEaRPPJObocx5BmMhndNL0LRm09PsWUkScZLbRrTRKQrhyjKrZQRoXyCOfZp3Gxa8GzmTMnLTErb2bl8YVzcUlKIHsSwX3Nfjmfjwdx/D28iR/RSKaVjsIKCiyzsqhmW2F4z/N+jYv1Em3LTXoF7TQcbSmm/o0WwVMk5prw18PsxfPyFK87fokYJRldUewpxS7XoT5N6t/++hyLEsuRttvy3s7GQ2RdJI8nJ+Um19sdyWDVAqs7LHsg0N436+Nd0zTw/UaS1UqvunpmbgjY1OMLpnKLL8rnVS6UulPz322IMZuBeloUKReL0GWQVOqhkFjX4h3rE3Z1WGjlIYqhTOErKAt7EY1ibRA3SQlQbDY2dutoFFEqxU0V7PyylILjnXywDoL1iZJ0jRxsdyv9BKBZO6fuu6I7LriZGm1L8Pz2/uZPlfbR6ksUOjU3SYPj5TQxWYUxeN6uah/defj3NDj5T04yPn3E1DmhdZC34xTsJQSpQDJBd5Sl5DmwdRaZ1ReylPuWyMi1+RoX/No7Nltg0gqQ6JHZZc4pLpDoVg3IDJI20L5kc0BGflAzYbMLpEH6UQzF7D4034BcPF1Pv4Xn7mnP27CSy9dGvBxHkXZukW4y0OSLw16nZyBjlsefGcAloXvHsa1sjgomZZQEHDRVsbyYxXJJSDITjQLZNlUX0VktGeEtlWwbsK5Fbfcgy5fqIC2cEDYWS/SDll+sgi7KXJVWn29f7l7oTtdwTjaK4cjg7N/6VxVrrpbb/h36L3NOvb9xLgL/Lx//if7DsnQgoonmzyyNtnLwTcuLSaf9PuvZnls0vFdQ3/A9J+69H+x62TzH+Iq/wA96/0Rv51/1opf2TgtgXnLRlM7r2er+g/R5qFlyLq6u8z4WvdgWTdIp0MuaZx0z2n/AIsa10Tr26UZP1H6XM6qO07SqfPT90UU/wBg+P8ARj4sNV4Xb38IM+M16ft3NKMYRYxO7Nn+tBKr2ZCxllJoVgW968+noTpXsv2HeT+iX+q39iKkui2eNd14f9ASopGV7RlyQcXTLNC+WQ/UDtDskjNzQCmDQvHsqsRJodMtwMf8S+GNqdCs7nuvQI+UvXaITx7tHo8blRUOknVB5W3oL0peBCOWtr57sfhiqNFZZ1Lz6C45Loq6BXfsVXhnkrYXIhPJAR5CtUUhPZHJibVCnQXSL0VRqcrR57xuLOXIjlXceqhPOyEiyTYHRC2iCDdGCvJoHXIE+Rn0hCcl230+F6vwQSbdJGvHhlN0kbD5K9wby9zPXGya2n1fbwUx5nvT9OzGlCUf5Ki8+NOHqo9n9F5iqVjb/NP8P+6TYlnhcGTwaMc/IlpZK/XT/uC/oxSx7tHqM/JnHDu3pLx70/Zfc8Xy87yXV15tt69l6L9i/IyXb3dVT9Op718C9IlNsbHGtv0H19z6hw9fh49eOidfGkfLMknqv8NfX5mVgzV09PbHb8dPtXt8iY3Ut/ZV7PYAeS10Vv8A0s5/5Ua3+JGvfqnRm8z6jN/kh7n+avf7I1L8vBG62ExyF6RXDk0EdtjdCnzpl6nZSsZfHWvJd2gODGWeP7EOVH5f1EaQ/wAmtiNMpCNIx5cyyS0D2WKBJGJFFJfpLpHekARa0K3O3pDuSQ30rEqyzv0e/wBUtgZyL8P6C2lWSnO+/TPlfLY2/pfSvyU3rwq1/dGwVomVrr4zzd09uWtNPTRz0GfqUf5nb1lN/u0UjCGh45LFbRWb7jdYBPJh0zLkl8bs2wmpRplmTRyEMY4GXJRmlhtimSBDL5NvJj7CdcbbH+S0GGNJ0IpfJ0c/DIT7yNPwwPF87JpMc4UpSvt2/X1Yr9Tw7Qbg3uE/Pfv9metwYxc9m7/FqLb/AGaM2JfUsf8A9s9mv417r3GoezueNxS/2s38iMZQaZ6WWMZRaYlxsm9GliM/i4daNPFB4LPmM6Sk6OUgTGbgXck2iAG5BqB2cLYxi4e/Pgm0kNFNukLcbZrcfJrz2BLDrx2CS9BhyK9RofD7L0fjMMRlMSsmn9v7DWHMbIZFJWjBkhKD6s2JslMTxZQlZClkGmzmahHJYbJkEctC2co0Xmw8MRmhnHYEONIukCmy6oJ1nLgmCui1S9Hv5ClKkDQx6DDmVrql7X9V8nMtqVumkl7nnaTXhtfD0TEqprbdfLbEoZysbv8APbv08L4GceMLg4b0t6X28sPWHX3BYyixO4E8uM0bFbR5fPnS0aMXonOMZxxokT3+EWTMeB2k2bv6QSsYvWPuNy+wO5PZwq0Y8rpiP4JwZ2/YhX4xPmPDczHvZh4uRWDI15ivK/5PV8jF5MHm8TqrwVjNwdopxuQ8ck0M4Ocn41+rGlk6uy778szcPD1314Nbi49FJ8ic9M15/wDITmq8G+NgHYwFcCH8aE6o8qc7YlkwA545qPHsr+EBwEi9i+LjL1/YanGkvASYCdJiyRbPVxdUtCuTF7CtwP2hS/UzOJfslsSzT5/oWwI5mvb0OcPGtGvCnFHmcuSlPR2K0XvIDyJptvtt9l6tAqZrTMZa7FbZeqB0wWdRVsJFgaRxUdZ1D8ZA80ZkZBrFkHTAPwwyE5sIsg1HWFuRz6ViTpv/AEra+RKb2N8DOprv4pab9n6CSWh4tWjaOHQOfKpX3fhETQ3QjbA0gjZNGXNxfk9OhOgD7FUMVIvSM0OHKL9NS5CrYVV6BF3FZ7BPxD0sUOqozZJ9nZfpOgfxSFyFnnsmMSyYe5qXInkQGhVKgE4uwfDGjuOQqgFBc2XxsexX2M9BsVhTFNCbOuhWbL9Y92AbVHKsUeQHeZkZ47NePkJejGTLoz82VvZaq36i9smsaQcmdz80gVMJiy0v5n+7BVIbBHcaiD2Fmt/cukM4sO/QOuGx6Jma4K1JpXxmhTLjBRwpSBUGaK1D1vRzYyi34B2Gx5AVSSQpgaH4yBpsQlh5sdMRocmxiGJw9jmGRrOQxGWl2VNfZN6I7fltv7vudmStydoZWXig0iXXphJziMqkMWB6Sqyl4ewaC4srUgclaG3HYV5EhQrFvxCAmiDEwOcTse50OW0/KejNqjmKnaD40XTATRbrO9OovXYk5AbvZKQrQ6QzNBZoVx0F6gJnNBKBWR2TexrFo7ix9uqu+/CCOJfov07Fq8dgWzDOb7en0HHwY1jWkyt4deP0L8aO51vt+pfC+5oxPt6edzcUYS0bHDwmjOBCnBrsjRTKytGOKsUz8daMflY9bPQ5K7GH9SYvp0tGNXZg8mRsvlYCmCa3Y0JtKrOM4kdIKBlpCSwUhca7joRj/Gg0cEC3HXYfxModEJMg8qDbBZ32OHRl8m9Cy5Jfm15MXJmeyU9G7BFS0bePkb9TR4+Q8rx8r2bvFyixdlORiUVaNiXsWzydiymayqPOYlUkOVXc6MTC/VoTp/C38mNeDubGWuptvy/IvcDUSSozeg5cMbrGXWLYOo6kZ3S0X6jQWFMBfGFkmWhJMFJdnfwWdcvRMaVfQvWQ6rAZ9lcVMFnJaNDHk157r+x2sklJQO0LLGmXxcrJjVIs8u/+EFxWI09F4yFI0vCOWUsjtm9xOVo055i9zy05dBJ5LQ6afpGmeiy8r7mPy82xV8lspd7A2jmgVsFTCWDpE2FHCxQ6gBLyFitMA70AycjRSKsSTSNvHnHcOc8rHN7+RvFz/ualidWQ+ZWennKVzZOxlYuZ9xmc2xHBotGaYDk497M6+IbXTspWNEZqzVin1dmRj4/c0MX5S84u/wAjE8devd/bwR1H01tvLpHIyFMmQYvAlO16ehnZqKxlaMOWDg6ZR5SCN5O7IdZKjXnJsOrOEOmzTx0Vyymm12a7/IHHRCHY5OmDmQimml6GSI8ZCFWZIsjxgbghBRxLNhKRhIQWlYyeg6WgGZ6IQDDH0U6+4WJ2QgjLSVBpk650QgSH2D2TrIQBSkTqOEIAVlWcb0cIcKK58ujK5PKbekcIelxYJnj8/JJOkxWcr92M4s1L1IQ9SEU0eU214zR43Jt+3bybnCzbXqQhLNjjT0dx+Vl+ZR7aNfEglSQh48/T63E7irKRP5vhMMp0dIZJ/wAj0sD/AABcnJqX8aMHk5iEGh4ZuV/NL+hDrIQgTMf/2Q==",
+        },
+        {
+            id:2,
+            title:"Brain wrecking",
+            desc:"Try rain out to do that",
+            img:"data:image/jpeg;base64,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",
+        }
+    ]*/
+
+    const getText=(html)=>{
+        const doc=new DOMParser().parseFromString(html,"text/html")
+        return doc.body.textContent
+    }
+  return (
+    <div className="home">
+   <div className="posts">
+    {posts.map((post)=>(
+        <div className='post' key={post.id}>
+            <div className="img">
+            <img src={`./upload/${post.img}`} alt="" />
+            </div>
+            <div className="content">
+                <Link className="link" to={`/post/${post.id}`}>
+                <h1>{post.title}</h1>
+                <p>{getText(post.desc)}</p>
+                <button>Read More</button>
+                </Link>
+            </div>
+        </div>
+    ))}
+   </div>
+    </div>
+  )
+}
+
+export default Home
